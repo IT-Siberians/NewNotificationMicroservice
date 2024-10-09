@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NewNotificationMicroservice.Application.Abstractions\NewNotificationMicroservice.Application.Services.Abstractions.csproj" />
+    <ProjectReference Include="..\NewNotificationMicroservice.Application.Models\NewNotificationMicroservice.Application.Models.csproj" />
+    <ProjectReference Include="..\NewNotificationMicroservice.Domain.Entities\NewNotificationMicroservice.Domain.Entities.csproj" />
+    <ProjectReference Include="..\NewNotificationMicroservice.Infrastructure.RabbitMQ\NewNotificationMicroservice.Infrastructure.RabbitMQ.csproj" />
+  </ItemGroup>
+
+</Project>
