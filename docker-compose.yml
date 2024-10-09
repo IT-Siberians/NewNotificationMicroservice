@@ -8,9 +8,9 @@ services:
     ports:
       - "3000:8080"
     depends_on:
-       db:
+      database:
         condition: service_healthy
-  db:
+  database:
     image: postgres:latest
     container_name: local_pgdb_notif_new
     restart: unless-stopped
