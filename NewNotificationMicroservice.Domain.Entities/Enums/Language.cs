@@ -2,7 +2,11 @@
 {
     public enum Language
     {
-        Eng = 0,
-        Rus = 1,
+        /// <summary>
+        /// Invariant Language (Invariant Country)
+        /// </summary>
+        Ivl = 0,
+        Eng = 1,
+        Rus = 2,
     }
 }
