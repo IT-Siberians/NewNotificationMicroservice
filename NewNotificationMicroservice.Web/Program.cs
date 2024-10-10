@@ -1,6 +1,8 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using HealthChecks.UI.Client;
 using MediatR;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NewNotificationMicroservice.Application.Services;
@@ -25,6 +27,13 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString(nameof(ApplicationDbContext));
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Connection string for ApplicationDbContext is not configured.");
+}
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -43,13 +52,6 @@ builder.Services.AddSwaggerGen(
 builder.Services.AddDbContext<ApplicationDbContext>(
                 options =>
                 {
-                    var connectionString = builder.Configuration.GetConnectionString(nameof(ApplicationDbContext));
-
-                    if (string.IsNullOrEmpty(connectionString))
-                    {
-                        throw new InvalidOperationException("Connection string for ApplicationDbContext is not configured.");
-                    }
-
                     options.UseNpgsql(connectionString);
                 });
 
@@ -87,7 +89,9 @@ builder.Services.AddTransient<IRequestHandler<ConfirmationEmailCommand, bool>, C
 builder.Services.AddTransient<IRequestHandler<CreateUserCommand, bool>, CreateUserHandler>();
 builder.Services.AddTransient<IRequestHandler<UpdateUserCommand, bool>, UpdateUserHandler>();
 
-//builder.Services.AddMediatR(typeof(MessageQueueService));
+builder.Services.AddHealthChecks()
+    .AddNpgSql(connectionString)
+    .AddDbContextCheck<ApplicationDbContext>();
 
 var app = builder.Build();
 
@@ -98,7 +102,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapHealthChecks("health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
 //app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 

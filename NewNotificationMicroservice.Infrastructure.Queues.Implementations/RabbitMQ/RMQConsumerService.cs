@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using NewNotificationMicroservice.Application.Services;
 using NewNotificationMicroservice.Common.Infrastructure.Queues.Abstraction;
 using NewNotificationMicroservice.Infrastructure.MediatR;
 using NewNotificationMicroservice.Infrastructure.RabbitMQ;

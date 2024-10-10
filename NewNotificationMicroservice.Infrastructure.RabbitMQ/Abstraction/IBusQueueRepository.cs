@@ -1,5 +1,4 @@
-﻿using NewNotificationMicroservice.Domain.Entities.Base;
-using NewNotificationMicroservice.Domain.Repositories.Abstractions.Base;
+﻿using NewNotificationMicroservice.Domain.Repositories.Abstractions.Base;
 using NewNotificationMicroservice.Infrastructure.RabbitMQ.Models;
 using NewNotificationMicroservice.Infrastructure.RabbitMQ.ValueObject;
 
@@ -8,7 +7,7 @@ namespace NewNotificationMicroservice.Infrastructure.RabbitMQ.Abstraction
     /// <summary>
     /// Интерфейс репозитория для работы с очередями шины
     /// </summary>
-    public interface IBusQueueRepository: IRepositoryWithUpdateAndDelete<BusQueue, Guid>
+    public interface IBusQueueRepository : IRepositoryWithUpdateAndDelete<BusQueue, Guid>
     {
         /// <summary>
         /// Получение типа события по имени очереди 
