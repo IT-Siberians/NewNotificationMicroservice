@@ -2,9 +2,9 @@
 
 namespace NewNotificationMicroservice.Infrastructure.MediatR.Commands
 {
-    public class ConfirmationEmailCommand : IRequest<bool>
+    public class ConfirmationEmailCommand<TModel> : IRequest<bool> where TModel : class
     {
-        public string Message { get; }
-        public ConfirmationEmailCommand(string message) => Message = message;
+        public TModel Message { get; }
+        public ConfirmationEmailCommand(TModel message) => Message = message;
     }
 }

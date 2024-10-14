@@ -8,16 +8,15 @@ using NewNotificationMicroservice.Infrastructure.MediatR.Commands;
 using NewNotificationMicroservice.Infrastructure.RabbitMQ.Abstraction;
 using Otus.QueueDto;
 using System.Globalization;
-using System.Text.Json;
 
 namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
 {
-    public class ConfirmationEmailHandler(IProducerService<MessageEvent> sender, IBusQueueService queueService, ITemplateApplicationService templateService, IMessageApplicationService messageService) : IRequestHandler<ConfirmationEmailCommand, bool>
+    public class ConfirmationEmailHandler(IProducerService<MessageEvent> sender, IBusQueueService queueService, ITemplateApplicationService templateService, IMessageApplicationService messageService) : IRequestHandler<ConfirmationEmailCommand<ConfirmationEmailEvent>, bool>
     {
         private readonly string _nameSite = "GoodDeal_OTUS";
         private readonly string _lang = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
 
-        public async Task<bool> Handle(ConfirmationEmailCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(ConfirmationEmailCommand<ConfirmationEmailEvent> request, CancellationToken cancellationToken)
         {
             var template = await GetTemplate("ConfirmationEmail", cancellationToken);
 
@@ -26,7 +25,8 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
                 return false;
             }
 
-            var confirmationEmail = JsonSerializer.Deserialize<ConfirmationEmailEvent>(request.Message);
+            var confirmationEmail = request.Message;
+
             var messageText = string.Format(template.Template, confirmationEmail.Username, confirmationEmail.Link, _nameSite);
             var messageSend = new MessageEvent(confirmationEmail.Username, confirmationEmail.Email, template.Type.Name, messageText);
 

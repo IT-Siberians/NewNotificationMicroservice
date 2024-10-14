@@ -17,7 +17,8 @@ using NewNotificationMicroservice.Infrastructure.MediatR;
 using NewNotificationMicroservice.Infrastructure.MediatR.Commands;
 using NewNotificationMicroservice.Infrastructure.MediatR.Handlers;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations;
-using NewNotificationMicroservice.Infrastructure.Queues.Implementations.MassTransit;
+using NewNotificationMicroservice.Infrastructure.Queues.Implementations.MassTransit.Consumers;
+using NewNotificationMicroservice.Infrastructure.Queues.Implementations.MassTransit.Producers;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations.RabbitMQ;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations.RabbitMQ.Mapper;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations.RabbitMQ.Services;
@@ -88,20 +89,21 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBusQueueService, BusQueueService>();
 builder.Services.AddScoped<IBusQueueRepository, BusQueueRepository>();
 
-builder.Services.AddScoped<IProducerService<SendMessage>, RMQProducerService>(); // <- старый продюссер
+//builder.Services.AddScoped<IProducerService<SendMessage>, RMQProducerService>(); // <- старый продюссер
 
-builder.Services.AddHostedService<RMQConsumerService>();
+//builder.Services.AddHostedService<RMQConsumerService>();
 
 builder.Services.AddTransient<IProducerService<MessageEvent>, MTProducerService>(); // <- работаем через это, продюсор на основе MassTransit, прибито в ConfirmationEmailHandler
 
-builder.Services.AddScoped<NotificationControlService>(); // <- старая схема реализации
+//builder.Services.AddScoped<NotificationControlService>(); // <- старая схема реализации
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-builder.Services.AddScoped<MessageQueueService>(); // <- работаем через это, если хочется через NotificationControlService, то в RMQConsumerService нужно внести изменения
 
-builder.Services.AddTransient<IRequestHandler<ConfirmationEmailCommand, bool>, ConfirmationEmailHandler>();
-builder.Services.AddTransient<IRequestHandler<CreateUserCommand, bool>, CreateUserHandler>();
-builder.Services.AddTransient<IRequestHandler<UpdateUserCommand, bool>, UpdateUserHandler>();
+//builder.Services.AddScoped<MessageQueueService>(); // <- работаем через это, если хочется через NotificationControlService, то в RMQConsumerService нужно внести изменения
+
+builder.Services.AddTransient<IRequestHandler<ConfirmationEmailCommand<ConfirmationEmailEvent>, bool>, ConfirmationEmailHandler>();
+builder.Services.AddTransient<IRequestHandler<CreateUserCommand<CreateUserEvent>, bool>, CreateUserHandler>();
+builder.Services.AddTransient<IRequestHandler<UpdateUserCommand<UpdateUserEvent>, bool>, UpdateUserHandler>();
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(connectionString)
@@ -110,7 +112,9 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumers(typeof(Program).Assembly);
+    x.AddConsumers(typeof(ConfirmationEmailConsumer).Assembly);
+    x.AddConsumers(typeof(CreateUserConsumer).Assembly);
+    x.AddConsumers(typeof(UpdateUserConsumer).Assembly);
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(new Uri(connectionStringRMQ));

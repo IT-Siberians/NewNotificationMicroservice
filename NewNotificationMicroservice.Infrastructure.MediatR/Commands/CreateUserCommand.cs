@@ -2,9 +2,9 @@
 
 namespace NewNotificationMicroservice.Infrastructure.MediatR.Commands
 {
-    public class CreateUserCommand : IRequest<bool>
+    public class CreateUserCommand<TModel> : IRequest<bool>
     {
-        public string Message { get; }
-        public CreateUserCommand(string message) => Message = message;
+        public TModel Message { get; }
+        public CreateUserCommand(TModel message) => Message = message;
     }
 }

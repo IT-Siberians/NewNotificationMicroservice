@@ -9,9 +9,9 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR
         {
             return queue switch
             {
-                "ConfirmationEmail" => await mediator.Send(new ConfirmationEmailCommand(message), cancellationToken),
-                "CreateUser" => await mediator.Send(new CreateUserCommand(message), cancellationToken),
-                "UpdateUser" => await mediator.Send(new UpdateUserCommand(message), cancellationToken),
+                "ConfirmationEmail" => await mediator.Send(new ConfirmationEmailCommand<string>(message), cancellationToken),
+                "CreateUser" => await mediator.Send(new CreateUserCommand<string>(message), cancellationToken),
+                "UpdateUser" => await mediator.Send(new UpdateUserCommand<string>(message), cancellationToken),
                 _ => false
             };
         }

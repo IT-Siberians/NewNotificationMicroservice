@@ -3,7 +3,7 @@ using NewNotificationMicroservice.Common.Infrastructure.Queues.Abstraction;
 using NewNotificationMicroservice.Domain.Entities.Enums;
 using Otus.QueueDto;
 
-namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations.MassTransit
+namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations.MassTransit.Producers
 {
     public class MTProducerService(IPublishEndpoint publishEndpoint) : IProducerService<MessageEvent>
     {
