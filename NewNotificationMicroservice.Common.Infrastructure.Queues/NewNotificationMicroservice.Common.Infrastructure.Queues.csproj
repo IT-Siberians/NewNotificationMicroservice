@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NewNotificationMicroservice.Common.Infrastructure.Queue.Abstraction\NewNotificationMicroservice.Common.Infrastructure.Queues.Abstraction.csproj" />
+  </ItemGroup>
+
 </Project>

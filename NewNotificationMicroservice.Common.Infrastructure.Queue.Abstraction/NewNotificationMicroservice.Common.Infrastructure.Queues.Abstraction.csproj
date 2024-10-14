@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NewNotificationMicroservice.Common.Infrastructure.Queues\NewNotificationMicroservice.Common.Infrastructure.Queues.csproj" />
     <ProjectReference Include="..\NewNotificationMicroservice.Domain.Entities\NewNotificationMicroservice.Domain.Entities.csproj" />
   </ItemGroup>
 

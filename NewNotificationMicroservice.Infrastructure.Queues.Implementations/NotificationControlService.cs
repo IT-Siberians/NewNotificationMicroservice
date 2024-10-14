@@ -11,7 +11,7 @@ using System.Text.Json;
 
 namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations
 {
-    public class NotificationControlService(IProducerService sender, ITemplateApplicationService templateService, IMessageApplicationService messageService, IBusQueueService queueService, IUserApplicationService userService)
+    public class NotificationControlService(IProducerService<SendMessage> sender, ITemplateApplicationService templateService, IMessageApplicationService messageService, IBusQueueService queueService, IUserApplicationService userService)
     {
         private readonly string _nameSite = "GoodDeal_OTUS";
         private readonly string _lang = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
@@ -40,7 +40,7 @@ namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations
                     var messageText = string.Format(template.Template, confirmationEmail!.Username, confirmationEmail.Link, _nameSite);
                     var messageSend = new SendMessage(confirmationEmail.Username, confirmationEmail.Email, template.Type.Name, messageText);
 
-                    sender.SendMessage(messageSend, Direction.Email);
+                    sender.Send(messageSend, Direction.Email);
 
                     var messageSave = new CreateMessageModel(template.Type.Id, messageText, Direction.Email);
 

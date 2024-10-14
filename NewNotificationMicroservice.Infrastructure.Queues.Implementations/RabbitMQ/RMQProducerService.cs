@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations.RabbitMQ
 {
-    public class RMQProducerService : IProducerService
+    public class RMQProducerService : IProducerService<SendMessage>
     {
         private readonly ConnectionFactory _connectionFactory;
         private readonly RabbitMqConfig _rabbitMqConfig;
@@ -24,7 +24,7 @@ namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations.Rabb
             };
         }
 
-        public void SendMessage(SendMessage message, Direction direction)
+        public void Send(SendMessage message, Direction direction)
         {
             var messageString = JsonSerializer.Serialize(message);
             var body = Encoding.UTF8.GetBytes(messageString);

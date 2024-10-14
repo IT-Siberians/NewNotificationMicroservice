@@ -2,8 +2,8 @@
 
 namespace NewNotificationMicroservice.Common.Infrastructure.Queues.Abstraction
 {
-    public interface IProducerService
+    public interface IProducerService<TModelEvent>
     {
-        void SendMessage(SendMessage message, Direction direction);
+        void Send(TModelEvent message, Direction direction);
     }
 }

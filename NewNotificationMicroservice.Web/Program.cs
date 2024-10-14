@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using NewNotificationMicroservice.Application.Services;
 using NewNotificationMicroservice.Application.Services.Abstractions;
 using NewNotificationMicroservice.Application.Services.Mapper;
+using NewNotificationMicroservice.Common.Infrastructure.Queues;
 using NewNotificationMicroservice.Common.Infrastructure.Queues.Abstraction;
 using NewNotificationMicroservice.Domain.Repositories.Abstractions;
 using NewNotificationMicroservice.Infrastructure.EntityFramework;
@@ -15,6 +17,7 @@ using NewNotificationMicroservice.Infrastructure.MediatR;
 using NewNotificationMicroservice.Infrastructure.MediatR.Commands;
 using NewNotificationMicroservice.Infrastructure.MediatR.Handlers;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations;
+using NewNotificationMicroservice.Infrastructure.Queues.Implementations.MassTransit;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations.RabbitMQ;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations.RabbitMQ.Mapper;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations.RabbitMQ.Services;
@@ -23,6 +26,7 @@ using NewNotificationMicroservice.Infrastructure.RabbitMQ.Abstraction;
 using NewNotificationMicroservice.Infrastructure.Repositories.Implementations.Ef;
 using NewNotificationMicroservice.Web.Helpers;
 using NewNotificationMicroservice.Web.Mapper;
+using Otus.QueueDto;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +36,13 @@ var connectionString = builder.Configuration.GetConnectionString(nameof(Applicat
 if (string.IsNullOrEmpty(connectionString))
 {
     throw new InvalidOperationException("Connection string for ApplicationDbContext is not configured.");
+}
+
+var connectionStringRMQ = builder.Configuration.GetValue<string>("RabbitMqConfig:ConnectionString");
+
+if (string.IsNullOrEmpty(connectionStringRMQ))
+{
+    throw new InvalidOperationException("Connection string for RabbitMqConfig is not configured.");
 }
 
 // Add services to the container.
@@ -77,8 +88,11 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBusQueueService, BusQueueService>();
 builder.Services.AddScoped<IBusQueueRepository, BusQueueRepository>();
 
-builder.Services.AddScoped<IProducerService, RMQProducerService>();
+builder.Services.AddScoped<IProducerService<SendMessage>, RMQProducerService>(); // <- старый продюссер
+
 builder.Services.AddHostedService<RMQConsumerService>();
+
+builder.Services.AddTransient<IProducerService<MessageEvent>, MTProducerService>(); // <- работаем через это, продюсор на основе MassTransit, прибито в ConfirmationEmailHandler
 
 builder.Services.AddScoped<NotificationControlService>(); // <- старая схема реализации
 
@@ -91,7 +105,22 @@ builder.Services.AddTransient<IRequestHandler<UpdateUserCommand, bool>, UpdateUs
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(connectionString)
+    .AddRabbitMQ(rabbitConnectionString: connectionStringRMQ)
     .AddDbContextCheck<ApplicationDbContext>();
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumers(typeof(Program).Assembly);
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(new Uri(connectionStringRMQ));
+        cfg.ConfigureEndpoints(context);
+        cfg.UseMessageRetry(r =>
+        {
+            r.Interval(3, TimeSpan.FromSeconds(10));
+        });
+    });
+});
 
 var app = builder.Build();
 
