@@ -89,7 +89,7 @@ builder.Services.AddScoped<IBusQueueRepository, BusQueueRepository>();
 
 //builder.Services.AddHostedService<RMQConsumerService>();
 
-builder.Services.AddTransient<IProducerService<MessageEvent>, MTProducerService>(); // <- работаем через это, продюсор на основе MassTransit, прибито в ConfirmationEmailHandler
+builder.Services.AddTransient<IProducerService<MessageEvent>, EmailMessageProducer>(); // <- работаем через это, продюсор на основе MassTransit, прибито в ConfirmationEmailHandler
 
 //builder.Services.AddScoped<NotificationControlService>(); // <- старая схема реализации
 

@@ -5,7 +5,7 @@ using Otus.QueueDto;
 
 namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations.MassTransit.Producers
 {
-    public class MTProducerService(IPublishEndpoint publishEndpoint) : IProducerService<MessageEvent>
+    public class EmailMessageProducer(IPublishEndpoint publishEndpoint) : IProducerService<MessageEvent>
     {
         public void Send(MessageEvent message, Direction direction)
         {
