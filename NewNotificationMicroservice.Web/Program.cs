@@ -9,17 +9,13 @@ using Microsoft.OpenApi.Models;
 using NewNotificationMicroservice.Application.Services;
 using NewNotificationMicroservice.Application.Services.Abstractions;
 using NewNotificationMicroservice.Application.Services.Mapper;
-using NewNotificationMicroservice.Common.Infrastructure.Queues;
 using NewNotificationMicroservice.Common.Infrastructure.Queues.Abstraction;
 using NewNotificationMicroservice.Domain.Repositories.Abstractions;
 using NewNotificationMicroservice.Infrastructure.EntityFramework;
-using NewNotificationMicroservice.Infrastructure.MediatR;
 using NewNotificationMicroservice.Infrastructure.MediatR.Commands;
 using NewNotificationMicroservice.Infrastructure.MediatR.Handlers;
-using NewNotificationMicroservice.Infrastructure.Queues.Implementations;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations.MassTransit.Consumers;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations.MassTransit.Producers;
-using NewNotificationMicroservice.Infrastructure.Queues.Implementations.RabbitMQ;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations.RabbitMQ.Mapper;
 using NewNotificationMicroservice.Infrastructure.Queues.Implementations.RabbitMQ.Services;
 using NewNotificationMicroservice.Infrastructure.RabbitMQ;
@@ -142,7 +138,12 @@ app.MapHealthChecks("health", new HealthCheckOptions
 
 //app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseCors(policy =>
+{
+    policy.WithOrigins("http://localhost:5173")
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+});
 
 app.UseAuthorization();
 
