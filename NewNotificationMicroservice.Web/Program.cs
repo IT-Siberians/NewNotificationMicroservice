@@ -85,8 +85,6 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBusQueueService, BusQueueService>();
 builder.Services.AddScoped<IBusQueueRepository, BusQueueRepository>();
 
-//builder.Services.AddScoped<IProducerService<SendMessage>, RMQProducerService>(); // <- старый продюссер
-
 builder.Services.AddTransient<IProducerService<MessageEvent>, EmailMessageProducer>(); // <- работаем через это, продюсор на основе MassTransit, прибито в ConfirmationEmailHandler
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
