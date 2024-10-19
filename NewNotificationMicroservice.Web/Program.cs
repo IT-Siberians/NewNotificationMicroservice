@@ -91,8 +91,6 @@ builder.Services.AddScoped<IBusQueueRepository, BusQueueRepository>();
 
 builder.Services.AddTransient<IProducerService<MessageEvent>, EmailMessageProducer>(); // <- работаем через это, продюсор на основе MassTransit, прибито в ConfirmationEmailHandler
 
-//builder.Services.AddScoped<NotificationControlService>(); // <- старая схема реализации
-
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 //builder.Services.AddScoped<MessageQueueService>(); // <- работаем через это, если хочется через NotificationControlService, то в RMQConsumerService нужно внести изменения
