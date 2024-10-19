@@ -8,5 +8,7 @@
         Ivl = 0,
         Eng = 1,
         Rus = 2,
+        Fra = 3,
+        Deu = 4,
     }
 }
