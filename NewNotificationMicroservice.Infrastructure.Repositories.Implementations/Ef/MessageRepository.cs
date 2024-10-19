@@ -1,4 +1,5 @@
-﻿using NewNotificationMicroservice.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NewNotificationMicroservice.Domain.Entities;
 using NewNotificationMicroservice.Domain.Repositories.Abstractions;
 using NewNotificationMicroservice.Infrastructure.EntityFramework;
 using NewNotificationMicroservice.Infrastructure.Repositories.Implementations.Ef.Base;
@@ -20,9 +21,10 @@ namespace NewNotificationMicroservice.Infrastructure.Repositories.Implementation
         /// <returns>Идентификатор добавленного сообщения.</returns>
         public async Task<Guid> AddAsync(Message message, CancellationToken cancellationToken = default)
         {
+            context.Entry(message.Type).State = EntityState.Modified;
             context.Types.Attach(message.Type);
-            await context.Messages.AddAsync(message);
-            await context.SaveChangesAsync();
+            context.Messages.Add(message);
+            await context.SaveChangesAsync(cancellationToken);
 
             return message.Id;
         }

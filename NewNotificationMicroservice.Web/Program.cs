@@ -30,16 +30,16 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString(nameof(ApplicationDbContext));
+var dbConnectionString = builder.Configuration.GetConnectionString(nameof(ApplicationDbContext));
 
-if (string.IsNullOrEmpty(connectionString))
+if (string.IsNullOrEmpty(dbConnectionString))
 {
     throw new InvalidOperationException("Connection string for ApplicationDbContext is not configured.");
 }
 
-var connectionStringRMQ = builder.Configuration.GetValue<string>("RabbitMqConfig:ConnectionString");
+var rmqConnectionString = builder.Configuration.GetConnectionString(nameof(RabbitMqConfig));
 
-if (string.IsNullOrEmpty(connectionStringRMQ))
+if (string.IsNullOrEmpty(rmqConnectionString))
 {
     throw new InvalidOperationException("Connection string for RabbitMqConfig is not configured.");
 }
@@ -62,7 +62,7 @@ builder.Services.AddSwaggerGen(
 builder.Services.AddDbContext<ApplicationDbContext>(
                 options =>
                 {
-                    options.UseNpgsql(connectionString);
+                    options.UseNpgsql(dbConnectionString);
                 });
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
@@ -96,8 +96,8 @@ builder.Services.AddTransient<IRequestHandler<CreateUserCommand<CreateUserEvent>
 builder.Services.AddTransient<IRequestHandler<UpdateUserCommand<UpdateUserEvent>, bool>, UpdateUserHandler>();
 
 builder.Services.AddHealthChecks()
-    .AddNpgSql(connectionString)
-    .AddRabbitMQ(rabbitConnectionString: connectionStringRMQ)
+    .AddNpgSql(dbConnectionString)
+    .AddRabbitMQ(rabbitConnectionString: rmqConnectionString)
     .AddDbContextCheck<ApplicationDbContext>();
 
 builder.Services.AddMassTransit(x =>
@@ -107,7 +107,7 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumers(typeof(UpdateUserConsumer).Assembly);
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host(new Uri(connectionStringRMQ));
+        cfg.Host(new Uri(rmqConnectionString));
         cfg.ConfigureEndpoints(context);
         cfg.UseMessageRetry(r =>
         {

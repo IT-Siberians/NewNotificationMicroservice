@@ -20,10 +20,10 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
         {
             var confirmationEmail = request.Message;
 
-            var lang = CultureInfo
+            var lang = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo
                 .GetCultures(CultureTypes.NeutralCultures)
-                .FirstOrDefault(c => c.TwoLetterISOLanguageName.ToLower() == confirmationEmail.Email.ToLower())?
-                .ThreeLetterWindowsLanguageName ?? "Eng";
+                .FirstOrDefault(c => c.TwoLetterISOLanguageName.ToLower() == confirmationEmail.Culture.ToLower())?
+                .ThreeLetterISOLanguageName ?? "Eng");
 
             var template = await GetTemplate(nameof(ConfirmationEmailEvent), lang, cancellationToken);
 

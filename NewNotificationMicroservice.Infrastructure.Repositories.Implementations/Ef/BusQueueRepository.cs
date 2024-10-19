@@ -35,8 +35,8 @@ namespace NewNotificationMicroservice.Infrastructure.Repositories.Implementation
             context.Entry(queue.Type).State = EntityState.Modified;
             context.Types.Attach(queue.Type);
             context.Users.Attach(queue.CreatedByUser);
-            await context.BusQueues.AddAsync(queue);
-            await context.SaveChangesAsync();
+            context.BusQueues.Add(queue);
+            await context.SaveChangesAsync(cancellationToken);
 
             return queue.Id;
         }
