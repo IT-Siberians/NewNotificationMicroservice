@@ -89,8 +89,6 @@ builder.Services.AddTransient<IProducerService<MessageEvent>, EmailMessageProduc
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-//builder.Services.AddScoped<MessageQueueService>(); // <- работаем через это, если хочется через NotificationControlService, то в RMQConsumerService нужно внести изменения
-
 builder.Services.AddTransient<IRequestHandler<ConfirmationEmailCommand<ConfirmationEmailEvent>, bool>, ConfirmationEmailHandler>();
 builder.Services.AddTransient<IRequestHandler<CreateUserCommand<CreateUserEvent>, bool>, CreateUserHandler>();
 builder.Services.AddTransient<IRequestHandler<UpdateUserCommand<UpdateUserEvent>, bool>, UpdateUserHandler>();
