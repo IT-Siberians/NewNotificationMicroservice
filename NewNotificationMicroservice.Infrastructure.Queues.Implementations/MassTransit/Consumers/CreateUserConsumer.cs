@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NewNotificationMicroservice.Infrastructure.MediatR.Commands;
-using Otus.QueueDto;
+using Otus.QueueDto.User;
 
 namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations.MassTransit.Consumers
 {

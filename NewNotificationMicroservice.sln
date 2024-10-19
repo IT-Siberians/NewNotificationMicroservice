@@ -39,8 +39,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewNotificationMicroservice
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewNotificationMicroservice.Application.Services", "NewNotificationMicroservice.Application.Services\NewNotificationMicroservice.Application.Services.csproj", "{916A635A-A119-4C69-8707-698C7B8C9991}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewNotificationMicroservice.Common.Infrastructure.Queues", "NewNotificationMicroservice.Common.Infrastructure.Queues\NewNotificationMicroservice.Common.Infrastructure.Queues.csproj", "{86E98BE8-A8AD-464A-940E-55F38654CCA6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewNotificationMicroservice.Infrastructure.MediatR", "NewNotificationMicroservice.Infrastructure.MediatR\NewNotificationMicroservice.Infrastructure.MediatR.csproj", "{C011249A-03ED-4F06-B2D3-95674BC3A904}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{5C621873-CA9E-4A2F-A870-29AAD8ADAD1B}"
@@ -108,10 +106,6 @@ Global
 		{916A635A-A119-4C69-8707-698C7B8C9991}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{916A635A-A119-4C69-8707-698C7B8C9991}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{916A635A-A119-4C69-8707-698C7B8C9991}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86E98BE8-A8AD-464A-940E-55F38654CCA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86E98BE8-A8AD-464A-940E-55F38654CCA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86E98BE8-A8AD-464A-940E-55F38654CCA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86E98BE8-A8AD-464A-940E-55F38654CCA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C011249A-03ED-4F06-B2D3-95674BC3A904}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C011249A-03ED-4F06-B2D3-95674BC3A904}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C011249A-03ED-4F06-B2D3-95674BC3A904}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -134,7 +128,6 @@ Global
 		{5E207A24-B14B-44F2-A022-2C97082AF574} = {DF6A2784-B4C3-4C28-AE17-0F2BB3F8A34F}
 		{F5F4EDAA-2CDF-4468-80DA-7724A4494B7D} = {ACB76458-B8F2-4C6C-ADB5-EBF39F5C1AC6}
 		{916A635A-A119-4C69-8707-698C7B8C9991} = {F0EC5A5B-245A-436F-8593-B31010147A8C}
-		{86E98BE8-A8AD-464A-940E-55F38654CCA6} = {DF6A2784-B4C3-4C28-AE17-0F2BB3F8A34F}
 		{C011249A-03ED-4F06-B2D3-95674BC3A904} = {ACB76458-B8F2-4C6C-ADB5-EBF39F5C1AC6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

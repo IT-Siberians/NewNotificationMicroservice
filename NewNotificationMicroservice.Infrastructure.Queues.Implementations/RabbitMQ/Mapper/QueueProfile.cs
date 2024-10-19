@@ -2,8 +2,7 @@
 using NewNotificationMicroservice.Application.Models.BusQueue;
 using NewNotificationMicroservice.Application.Models.User;
 using NewNotificationMicroservice.Infrastructure.RabbitMQ.Models;
-using CreateUserEvent = NewNotificationMicroservice.Common.Infrastructure.Queues.Events.CreateUserEvent;
-using UpdateUserEvent = NewNotificationMicroservice.Common.Infrastructure.Queues.Events.UpdateUserEvent;
+using Otus.QueueDto.User;
 
 namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations.RabbitMQ.Mapper
 {
@@ -16,8 +15,6 @@ namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations.Rabb
                     .ReverseMap();
             CreateMap<CreateUserEvent, CreateUserModel>().ReverseMap();
             CreateMap<UpdateUserEvent, UpdateUserModel>().ReverseMap();
-            CreateMap<Otus.QueueDto.CreateUserEvent, CreateUserModel>().ReverseMap();
-            CreateMap<Otus.QueueDto.UpdateUserEvent, UpdateUserModel>().ReverseMap();
         }
     }
 }

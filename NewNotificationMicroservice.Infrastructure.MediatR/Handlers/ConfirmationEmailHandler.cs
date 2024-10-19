@@ -6,7 +6,8 @@ using NewNotificationMicroservice.Common.Infrastructure.Queues.Abstraction;
 using NewNotificationMicroservice.Domain.Entities.Enums;
 using NewNotificationMicroservice.Infrastructure.MediatR.Commands;
 using NewNotificationMicroservice.Infrastructure.RabbitMQ.Abstraction;
-using Otus.QueueDto;
+using Otus.QueueDto.Email;
+using Otus.QueueDto.Notification;
 using System.Globalization;
 
 namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
@@ -14,18 +15,22 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
     public class ConfirmationEmailHandler(IProducerService<MessageEvent> sender, IBusQueueService queueService, ITemplateApplicationService templateService, IMessageApplicationService messageService) : IRequestHandler<ConfirmationEmailCommand<ConfirmationEmailEvent>, bool>
     {
         private readonly string _nameSite = "GoodDeal_OTUS";
-        private readonly string _lang = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo.CurrentCulture.ThreeLetterISOLanguageName);
 
         public async Task<bool> Handle(ConfirmationEmailCommand<ConfirmationEmailEvent> request, CancellationToken cancellationToken)
         {
-            var template = await GetTemplate("ConfirmationEmail", cancellationToken);
+            var confirmationEmail = request.Message;
+
+            var lang = CultureInfo
+                .GetCultures(CultureTypes.NeutralCultures)
+                .FirstOrDefault(c => c.TwoLetterISOLanguageName.ToLower() == confirmationEmail.Email.ToLower())?
+                .ThreeLetterWindowsLanguageName ?? "Eng";
+
+            var template = await GetTemplate(nameof(ConfirmationEmailEvent), lang, cancellationToken);
 
             if (template is null)
             {
                 return false;
             }
-
-            var confirmationEmail = request.Message;
 
             var messageText = string.Format(template.Template, confirmationEmail.Username, confirmationEmail.Link, _nameSite);
             var messageSend = new MessageEvent(confirmationEmail.Username, confirmationEmail.Email, template.Type.Name, messageText);
@@ -38,11 +43,11 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
             return true;
         }
 
-        private async Task<TemplateModel?> GetTemplate(string queue, CancellationToken cancellationToken)
+        private async Task<TemplateModel?> GetTemplate(string queue, string lang, CancellationToken cancellationToken)
         {
             var queueDb = await queueService.GetByNameAsync(queue, cancellationToken);
 
-            return queueDb is null ? null : await templateService.GetByQueueAndLanguageAsync(queueDb.Type.Id, _lang, cancellationToken);
+            return queueDb is null ? null : await templateService.GetByQueueAndLanguageAsync(queueDb.Type.Id, lang, cancellationToken);
         }
     }
 }

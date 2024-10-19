@@ -23,7 +23,9 @@ using NewNotificationMicroservice.Infrastructure.RabbitMQ.Abstraction;
 using NewNotificationMicroservice.Infrastructure.Repositories.Implementations.Ef;
 using NewNotificationMicroservice.Web.Helpers;
 using NewNotificationMicroservice.Web.Mapper;
-using Otus.QueueDto;
+using Otus.QueueDto.Email;
+using Otus.QueueDto.Notification;
+using Otus.QueueDto.User;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -85,7 +87,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBusQueueService, BusQueueService>();
 builder.Services.AddScoped<IBusQueueRepository, BusQueueRepository>();
 
-builder.Services.AddTransient<IProducerService<MessageEvent>, EmailMessageProducer>(); // <- работаем через это, продюсор на основе MassTransit, прибито в ConfirmationEmailHandler
+builder.Services.AddTransient<IProducerService<MessageEvent>, EmailMessageProducer>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 

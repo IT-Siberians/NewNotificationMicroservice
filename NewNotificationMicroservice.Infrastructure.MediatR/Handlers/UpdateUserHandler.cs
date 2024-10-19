@@ -3,7 +3,7 @@ using MediatR;
 using NewNotificationMicroservice.Application.Models.User;
 using NewNotificationMicroservice.Application.Services.Abstractions;
 using NewNotificationMicroservice.Infrastructure.MediatR.Commands;
-using Otus.QueueDto;
+using Otus.QueueDto.User;
 
 namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
 {
