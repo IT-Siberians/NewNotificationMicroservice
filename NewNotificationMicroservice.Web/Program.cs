@@ -105,6 +105,8 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumers(typeof(ConfirmationEmailConsumer).Assembly);
     x.AddConsumers(typeof(CreateUserConsumer).Assembly);
     x.AddConsumers(typeof(UpdateUserConsumer).Assembly);
+    x.AddConsumers(typeof(BidPerLotConsumer).Assembly);
+    x.AddConsumers(typeof(WonLotConsumer).Assembly);
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(new Uri(rmqConnectionString));

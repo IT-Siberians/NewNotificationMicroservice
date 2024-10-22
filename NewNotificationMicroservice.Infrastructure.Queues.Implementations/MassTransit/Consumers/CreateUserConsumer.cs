@@ -14,7 +14,7 @@ namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations.Mass
 
             if (!result)
             {
-                logger.LogWarning("Failed to send email, message will be redelivered.");
+                logger.LogWarning("Failed to create user, message will be redelivered.");
                 await context.Redeliver(TimeSpan.FromSeconds(10));
             }
         }
