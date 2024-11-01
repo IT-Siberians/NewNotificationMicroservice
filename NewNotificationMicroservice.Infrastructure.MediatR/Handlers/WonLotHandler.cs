@@ -12,10 +12,10 @@ using System.Globalization;
 
 namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
 {
-    public class WonLotHandler(IProducerService<MessageEvent> sender, IBusQueueService queueService, ITemplateApplicationService templateService, IUserApplicationService userService, IMessageApplicationService messageService) : IRequestHandler<ConfirmationEmailCommand<WonLotEvent>, bool>
+    public class WonLotHandler(IProducerService<MessageEvent> sender, IBusQueueService queueService, ITemplateApplicationService templateService, IUserApplicationService userService, IMessageApplicationService messageService) : IRequestHandler<WonLotCommand<WonLotEvent>, bool>
     {
         private readonly string _nameSite = "GoodDeal_OTUS";
-        public async Task<bool> Handle(ConfirmationEmailCommand<WonLotEvent> request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(WonLotCommand<WonLotEvent> request, CancellationToken cancellationToken)
         {
             var confirmationEmail = request.Message;
 
@@ -26,10 +26,7 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
                 return false;
             }
 
-            var lang = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(CultureInfo
-                .GetCultures(CultureTypes.NeutralCultures)
-                .FirstOrDefault(c => c.TwoLetterISOLanguageName.ToLower() == "Rus".ToLower())? // customer.Culture - надо добавить культуру пользоватлелю
-                .ThreeLetterISOLanguageName ?? "Eng");
+            var lang = (customer.Language == "Ivl") ? "Eng" : customer.Language;
 
             var template = await GetTemplate(nameof(WonLotEvent), lang, cancellationToken);
 
@@ -38,7 +35,7 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
                 return false;
             }
 
-            var messageText = string.Format(template.Template, customer.Username, confirmationEmail.NameLot, _nameSite, confirmationEmail.Bid);
+            var messageText = string.Format(template.Template, customer.FullName, confirmationEmail.NameLot, _nameSite, confirmationEmail.Bid);
             var messageSend = new MessageEvent(customer.Username, customer.Email, template.Type.Name, messageText);
 
             sender.Send(messageSend, Direction.Email);

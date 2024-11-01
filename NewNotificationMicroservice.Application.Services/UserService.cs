@@ -2,6 +2,7 @@
 using NewNotificationMicroservice.Application.Models.User;
 using NewNotificationMicroservice.Application.Services.Abstractions;
 using NewNotificationMicroservice.Domain.Entities;
+using NewNotificationMicroservice.Domain.Entities.Enums;
 using NewNotificationMicroservice.Domain.Repositories.Abstractions;
 using NewNotificationMicroservice.Domain.ValueObjects;
 
@@ -32,7 +33,7 @@ namespace NewNotificationMicroservice.Application.Services
                 return null;
             }
 
-            var newUser = new User(createUser.Id, new Username(createUser.Username), new FullName(createUser.FullName), new Email(createUser.Email));
+            var newUser = new User(createUser.Id, new Username(createUser.Username), new FullName(createUser.FullName), new Email(createUser.Email), (Language)Enum.Parse(typeof(Language), createUser.Language));
 
             return await userRepository.AddAsync(newUser, cancellationToken);
         }
@@ -46,7 +47,7 @@ namespace NewNotificationMicroservice.Application.Services
                 return false;
             }
 
-            user.Update(new FullName(updateUser.FullName), new Email(updateUser.Email));
+            user.Update(new FullName(updateUser.FullName), new Email(updateUser.Email), (Language)Enum.Parse(typeof(Language), updateUser.Language));
 
             return await userRepository.UpdateAsync(user, cancellationToken);
         }

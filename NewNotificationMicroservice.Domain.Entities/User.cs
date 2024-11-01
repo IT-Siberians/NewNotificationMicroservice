@@ -1,4 +1,5 @@
 ﻿using NewNotificationMicroservice.Domain.Entities.Base;
+using NewNotificationMicroservice.Domain.Entities.Enums;
 using NewNotificationMicroservice.Domain.ValueObjects;
 
 namespace NewNotificationMicroservice.Domain.Entities
@@ -29,6 +30,11 @@ namespace NewNotificationMicroservice.Domain.Entities
         public Email Email { get; private set; }
 
         /// <summary>
+        /// Язык шаблона
+        /// </summary>
+        public Language Language { get; private set; }
+
+        /// <summary>
         /// Получает дату и время создания пользователя.
         /// </summary>
         public DateTime CreationDate { get; }
@@ -47,12 +53,14 @@ namespace NewNotificationMicroservice.Domain.Entities
         /// <param name="username">Имя пользователя.</param>
         /// <param name="fullName">Имя пользователя.</param>
         /// <param name="email">Адрес электронной почты пользователя.</param>
-        public User(Guid id, Username username, FullName fullName, Email email)
+        /// <param name="language">Язык пользователя.</param>
+        public User(Guid id, Username username, FullName fullName, Email email, Language language)
         {
             Id = id;
             Username = username;
             FullName = fullName;
             Email = email;
+            Language = language;
             CreationDate = DateTime.UtcNow;
         }
 
@@ -61,10 +69,12 @@ namespace NewNotificationMicroservice.Domain.Entities
         /// </summary>
         /// <param name="fullName">Имя пользователя.</param>
         /// <param name="email">Адрес электронной почты пользователя.</param>
-        public void Update(FullName fullName, Email email)
+        /// <param name="language">Язык пользователя.</param>
+        public void Update(FullName fullName, Email email, Language language)
         {
             FullName = fullName;
             Email = email;
+            Language = language;
         }
     }
 }

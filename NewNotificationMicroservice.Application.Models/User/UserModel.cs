@@ -7,5 +7,6 @@ namespace NewNotificationMicroservice.Application.Models.User
         string Username,
         string FullName,
         string Email,
+        string Language,
         DateTime CreationDate) : IBaseModel<Guid>;
 }

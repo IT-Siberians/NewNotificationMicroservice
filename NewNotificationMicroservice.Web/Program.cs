@@ -24,6 +24,7 @@ using NewNotificationMicroservice.Infrastructure.Repositories.Implementations.Ef
 using NewNotificationMicroservice.Web.Helpers;
 using NewNotificationMicroservice.Web.Mapper;
 using Otus.QueueDto.Email;
+using Otus.QueueDto.Lot;
 using Otus.QueueDto.Notification;
 using Otus.QueueDto.User;
 using System.Reflection;
@@ -94,6 +95,8 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Get
 builder.Services.AddTransient<IRequestHandler<ConfirmationEmailCommand<ConfirmationEmailEvent>, bool>, ConfirmationEmailHandler>();
 builder.Services.AddTransient<IRequestHandler<CreateUserCommand<CreateUserEvent>, bool>, CreateUserHandler>();
 builder.Services.AddTransient<IRequestHandler<UpdateUserCommand<UpdateUserEvent>, bool>, UpdateUserHandler>();
+builder.Services.AddTransient<IRequestHandler<BidPerLotCommand<BidPerLotEvent>, bool>, BidPerLotHandler>();
+builder.Services.AddTransient<IRequestHandler<WonLotCommand<WonLotEvent>, bool>, WonLotHandler>();
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(dbConnectionString)
@@ -136,7 +139,7 @@ app.MapHealthChecks("health", new HealthCheckOptions
 
 app.UseCors(policy =>
 {
-    policy.WithOrigins("http://localhost:5173")
+    policy.AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader();
 });

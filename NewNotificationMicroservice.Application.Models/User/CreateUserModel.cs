@@ -6,5 +6,6 @@ namespace NewNotificationMicroservice.Application.Models.User
         Guid Id,
         string Username,
         string FullName,
-        string Email) : ICreateModel;
+        string Email,
+        string Language) : ICreateModel;
 }

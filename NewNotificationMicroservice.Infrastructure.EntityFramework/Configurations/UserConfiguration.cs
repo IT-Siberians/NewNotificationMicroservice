@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NewNotificationMicroservice.Domain.Entities;
+using NewNotificationMicroservice.Domain.Entities.Enums;
 using NewNotificationMicroservice.Domain.ValueObjects;
 
 namespace NewNotificationMicroservice.Infrastructure.EntityFramework.Configurations
@@ -31,6 +32,13 @@ namespace NewNotificationMicroservice.Infrastructure.EntityFramework.Configurati
                 .HasConversion(
                     v => v.Value,
                     v => new Email(v))
+                .IsRequired();
+
+            builder.Property(x => x.Language)
+                .HasConversion(
+                    o => o.ToString(),
+                    s => (Language)Enum.Parse(typeof(Language), s))
+                .HasDefaultValue(Language.Ivl)
                 .IsRequired();
 
             builder.Property(x => x.CreationDate)
