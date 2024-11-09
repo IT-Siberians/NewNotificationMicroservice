@@ -32,7 +32,7 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
                 return false;
             }
 
-            var messageText = string.Format(template.Template, confirmationEmail.Username, confirmationEmail.Link, _nameSite);
+            var messageText = string.Format(template.Template, confirmationEmail.Username, confirmationEmail.Link, _nameSite, confirmationEmail.Code);
             var messageSend = new MessageEvent(confirmationEmail.Username, confirmationEmail.Email, template.Type.Name, messageText);
 
             sender.Send(messageSend, Direction.Email);
