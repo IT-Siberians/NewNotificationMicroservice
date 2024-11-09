@@ -8,7 +8,6 @@ using NewNotificationMicroservice.Infrastructure.MediatR.Commands;
 using NewNotificationMicroservice.Infrastructure.RabbitMQ.Abstraction;
 using Otus.QueueDto.Email;
 using Otus.QueueDto.Lot;
-using System.Globalization;
 
 namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
 {
@@ -26,9 +25,7 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
                 return false;
             }
 
-            var lang = (customer.Language == "Ivl") ? "Eng" : customer.Language;
-
-            var template = await GetTemplate(nameof(BidPerLotEvent), lang, cancellationToken);
+            var template = await GetTemplate(nameof(BidPerLotEvent), customer.Language, cancellationToken);
 
             if (template is null)
             {
@@ -50,7 +47,14 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
         {
             var queueDb = await queueService.GetByNameAsync(queue, cancellationToken);
 
-            return queueDb is null ? null : await templateService.GetByQueueAndLanguageAsync(queueDb.Type.Id, lang, cancellationToken);
+            if (queueDb is null)
+            {
+                return null;
+            }
+
+            var template = await templateService.GetByQueueAndLanguageAsync(queueDb.Type.Id, lang, cancellationToken);
+
+            return template is not null ? template : await templateService.GetByQueueAndLanguageAsync(queueDb.Type.Id, "Eng", cancellationToken);
         }
     }
 }

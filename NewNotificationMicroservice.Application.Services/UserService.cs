@@ -26,6 +26,7 @@ namespace NewNotificationMicroservice.Application.Services
 
         public async Task<Guid?> AddAsync(CreateUserModel createUser, CancellationToken cancellationToken = default)
         {
+
             var user = await userRepository.GetByIdAsync(createUser.Id, cancellationToken);
 
             if (user is not null)
@@ -33,7 +34,7 @@ namespace NewNotificationMicroservice.Application.Services
                 return null;
             }
 
-            var newUser = new User(createUser.Id, new Username(createUser.Username), new FullName(createUser.FullName), new Email(createUser.Email), (Language)Enum.Parse(typeof(Language), createUser.Language));
+            var newUser = new User(createUser.Id, new Username(createUser.Username), new FullName(createUser.FullName), new Email(createUser.Email), GetLanguage(createUser.Language));
 
             return await userRepository.AddAsync(newUser, cancellationToken);
         }
@@ -47,9 +48,18 @@ namespace NewNotificationMicroservice.Application.Services
                 return false;
             }
 
-            user.Update(new FullName(updateUser.FullName), new Email(updateUser.Email), (Language)Enum.Parse(typeof(Language), updateUser.Language));
+            user.Update(new FullName(updateUser.FullName), new Email(updateUser.Email), GetLanguage(updateUser.Language));
 
             return await userRepository.UpdateAsync(user, cancellationToken);
+        }
+
+        private Language GetLanguage(string language)
+        {
+            if (string.IsNullOrWhiteSpace(language))
+            {
+                return (Language)Enum.Parse(typeof(Language), "Rus");
+            }
+            return (Language)Enum.Parse(typeof(Language), language);
         }
     }
 }

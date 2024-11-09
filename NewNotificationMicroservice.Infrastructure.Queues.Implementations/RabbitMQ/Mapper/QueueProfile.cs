@@ -11,10 +11,14 @@ namespace NewNotificationMicroservice.Infrastructure.Queues.Implementations.Rabb
         public QueueProfile()
         {
             CreateMap<BusQueue, BusQueueModel>()
-                    .ForMember(d => d.QueueName, o => o.MapFrom(s => s.QueueName.Value))
-                    .ReverseMap();
-            CreateMap<CreateUserEvent, CreateUserModel>().ReverseMap();
-            CreateMap<UpdateUserEvent, UpdateUserModel>().ReverseMap();
+                .ForMember(d => d.QueueName, o => o.MapFrom(s => s.QueueName.Value))
+                .ReverseMap();
+
+            CreateMap<CreateUserModel, CreateUserEvent>()
+                .ReverseMap();
+
+            CreateMap<UpdateUserModel, UpdateUserEvent>()
+                .ReverseMap();
         }
     }
 }
