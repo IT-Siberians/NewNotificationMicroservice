@@ -106,13 +106,28 @@ builder.Services.AddHealthChecks()
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumers(typeof(ConfirmationEmailConsumer).Assembly);
-    x.AddConsumers(typeof(CreateUserConsumer).Assembly);
-    x.AddConsumers(typeof(UpdateUserConsumer).Assembly);
-    x.AddConsumers(typeof(BidPerLotConsumer).Assembly);
-    x.AddConsumers(typeof(WonLotConsumer).Assembly);
+
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(new Uri(rmqConnectionString));
+        cfg.ReceiveEndpoint($"{nameof(CreateUserEvent)}.Notify", e =>
+        {
+            e.ConfigureConsumer<CreateUserConsumer>(context);
+        });
+
+        cfg.ReceiveEndpoint($"{nameof(UpdateUserEvent)}.Notify", e =>
+        {
+            e.ConfigureConsumer<UpdateUserConsumer>(context);
+        });
+        cfg.ReceiveEndpoint($"{nameof(BidPerLotEvent)}.Notify", e =>
+        {
+            e.ConfigureConsumer<BidPerLotConsumer>(context);
+        });
+
+        cfg.ReceiveEndpoint($"{nameof(WonLotEvent)}.Notify", e =>
+        {
+            e.ConfigureConsumer<WonLotConsumer>(context);
+        });
         cfg.ConfigureEndpoints(context);
         cfg.UseMessageRetry(r =>
         {
