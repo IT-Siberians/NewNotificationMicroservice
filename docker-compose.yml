@@ -5,8 +5,7 @@ services:
      context: .
      dockerfile: NewNotificationMicroservice.Web/Dockerfile
     restart: always
-    volumes:
-      - ./appsettings.json:/app/appsettings.json
+    env_file: "backend.env"
     ports:
       - "3000:8080"
     depends_on:
@@ -29,6 +28,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
 volumes:
   local_pgdata:
-  pgadmin-data:

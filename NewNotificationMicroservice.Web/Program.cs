@@ -31,14 +31,14 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var dbConnectionString = builder.Configuration.GetConnectionString(nameof(ApplicationDbContext));
+var dbConnectionString = builder.Configuration[nameof(ApplicationDbContext).ToUpper()];
 
 if (string.IsNullOrEmpty(dbConnectionString))
 {
     throw new InvalidOperationException("Connection string for ApplicationDbContext is not configured.");
 }
 
-var rmqConnectionString = builder.Configuration.GetConnectionString(nameof(RabbitMqConfig));
+var rmqConnectionString = builder.Configuration[nameof(RabbitMqConfig).ToUpper()];
 
 if (string.IsNullOrEmpty(rmqConnectionString))
 {
