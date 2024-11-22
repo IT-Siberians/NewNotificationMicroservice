@@ -11,30 +11,29 @@ using Otus.QueueDto.Lot;
 
 namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
 {
-    public class WonLotHandler(IProducerService<MessageEvent> sender, IBusQueueService queueService, ITemplateApplicationService templateService, IUserApplicationService userService, IMessageApplicationService messageService) : IRequestHandler<WonLotCommand<WonLotEvent>, bool>
+    public class CancelLotHandler(IProducerService<MessageEvent> sender, IBusQueueService queueService, ITemplateApplicationService templateService, IUserApplicationService userService, IMessageApplicationService messageService) : IRequestHandler<CancelLotCommand<CancelLotEvent>, bool>
     {
         private readonly string _nameSite = "GoodDeal_OTUS";
-
-        public async Task<bool> Handle(WonLotCommand<WonLotEvent> request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(CancelLotCommand<CancelLotEvent> request, CancellationToken cancellationToken)
         {
-            var confirmationEmail = request.Message;
+            var cancelLot = request.Message;
 
-            var customer = await userService.GetByIdAsync(confirmationEmail.CustomerId, cancellationToken);
+            var seller = await userService.GetByIdAsync(cancelLot.SellerId, cancellationToken);
 
-            if (customer is null)
+            if (seller is null)
             {
                 return false;
             }
 
-            var template = await GetTemplate(nameof(WonLotEvent), customer.Language, cancellationToken);
+            var template = await GetTemplate(nameof(CancelLotEvent), seller.Language, cancellationToken);
 
             if (template is null)
             {
                 return false;
             }
 
-            var messageText = string.Format(template.Template, customer.FullName, confirmationEmail.Title, _nameSite, confirmationEmail.HammerPrice);
-            var messageSend = new MessageEvent(customer.Username, customer.Email, template.Type.Name, messageText);
+            var messageText = string.Format(template.Template, seller.FullName, cancelLot.Title, _nameSite);
+            var messageSend = new MessageEvent(seller.Username, seller.Email, template.Type.Name, messageText);
 
             sender.Send(messageSend, Direction.Email);
 

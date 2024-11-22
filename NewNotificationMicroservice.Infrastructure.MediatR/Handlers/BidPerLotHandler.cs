@@ -14,11 +14,12 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
     public class BidPerLotHandler(IProducerService<MessageEvent> sender, IBusQueueService queueService, ITemplateApplicationService templateService, IUserApplicationService userService, IMessageApplicationService messageService) : IRequestHandler<BidPerLotCommand<BidPerLotEvent>, bool>
     {
         private readonly string _nameSite = "GoodDeal_OTUS";
+
         public async Task<bool> Handle(BidPerLotCommand<BidPerLotEvent> request, CancellationToken cancellationToken)
         {
             var confirmationEmail = request.Message;
 
-            var customer = await userService.GetByIdAsync(confirmationEmail.PreviousCustomer, cancellationToken);
+            var customer = await userService.GetByIdAsync(confirmationEmail.PreviousCustomerId, cancellationToken);
 
             if (customer is null)
             {
@@ -32,7 +33,7 @@ namespace NewNotificationMicroservice.Infrastructure.MediatR.Handlers
                 return false;
             }
 
-            var messageText = string.Format(template.Template, customer.FullName, confirmationEmail.NameLot, _nameSite, confirmationEmail.Bid);
+            var messageText = string.Format(template.Template, customer.FullName, confirmationEmail.Title, _nameSite, confirmationEmail.Bid);
             var messageSend = new MessageEvent(customer.Username, customer.Email, template.Type.Name, messageText);
 
             sender.Send(messageSend, Direction.Email);

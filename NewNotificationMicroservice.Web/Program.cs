@@ -97,6 +97,7 @@ builder.Services.AddTransient<IRequestHandler<CreateUserCommand<CreateUserEvent>
 builder.Services.AddTransient<IRequestHandler<UpdateUserCommand<UpdateUserEvent>, bool>, UpdateUserHandler>();
 builder.Services.AddTransient<IRequestHandler<BidPerLotCommand<BidPerLotEvent>, bool>, BidPerLotHandler>();
 builder.Services.AddTransient<IRequestHandler<WonLotCommand<WonLotEvent>, bool>, WonLotHandler>();
+builder.Services.AddTransient<IRequestHandler<CancelLotCommand<CancelLotEvent>, bool>, CancelLotHandler>();
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(dbConnectionString)
@@ -119,6 +120,7 @@ builder.Services.AddMassTransit(x =>
         {
             e.ConfigureConsumer<UpdateUserConsumer>(context);
         });
+
         cfg.ReceiveEndpoint($"{nameof(BidPerLotEvent)}.Notify", e =>
         {
             e.ConfigureConsumer<BidPerLotConsumer>(context);
@@ -128,6 +130,12 @@ builder.Services.AddMassTransit(x =>
         {
             e.ConfigureConsumer<WonLotConsumer>(context);
         });
+
+        cfg.ReceiveEndpoint($"{nameof(CancelLotEvent)}.Notify", e =>
+        {
+            e.ConfigureConsumer<CancelLotConsumer>(context);
+        });
+
         cfg.ConfigureEndpoints(context);
         cfg.UseMessageRetry(r =>
         {
